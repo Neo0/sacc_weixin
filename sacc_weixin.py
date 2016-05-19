@@ -3,9 +3,17 @@
 import hashlib
 from xml.etree.ElementTree import fromstring
 import time
+import re
 from flask import Flask, request, make_response
 import sys
 import urllib, httplib
+
+
+URL_ZCCX = 'zccx.tyb.njupt.edu.cn'
+TIME_SUM = r'<span class="badge">(\d+?)</span>'
+TIME_DAY = r'(\d+?)年(\d+?)月(\d+?)日</td>'
+
+
 
 app = Flask(__name__)
 # app.debug = True
@@ -13,6 +21,22 @@ app = Flask(__name__)
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
+
+def getcp(url, name, id):
+    postp = {'name': name, 'number': id}
+    params = urllib.urlencode(postp)
+    headers = {"Content-type": "application/x-www-form-urlencoded"}
+    conn = httplib.HTTPConnection(url)
+    conn.request("POST", '/student', params, headers)
+    res = conn.getresponse().read()
+    conn.close()
+    # soup = BeautifulSoup(res)
+    time_sum_re = re.compile(TIME_SUM)
+    time_sum = time_sum_re.findall(res)[0]
+    # print soup
+    return time_sum
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -37,7 +61,7 @@ def weixinoauth():
         FromUserName = xml_recv.find('FromUserName').text
         key = xml_recv.find("Content").text
         zccx = key.split(' ')
-        url = 'http://127.0.0.1:5000/'
+        url = 'http://127.0.0.1:5000/zccx'
         postp = {'name': zccx[0], 'id': zccx[1]}
         params = urllib.urlencode(postp)
         headers = {"Content-type": "application/x-www-form-urlencoded"}
