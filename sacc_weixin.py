@@ -61,15 +61,7 @@ def weixinoauth():
         FromUserName = xml_recv.find('FromUserName').text
         key = xml_recv.find("Content").text
         zccx = key.split(' ')
-        url = 'http://127.0.0.1:5000/zccx'
-        postp = {'name': zccx[0], 'id': zccx[1]}
-        params = urllib.urlencode(postp)
-        headers = {"Content-type": "application/x-www-form-urlencoded"}
-        conn = httplib.HTTPConnection(url)
-        conn.request("POST", '/', params, headers)
-        res = conn.getresponse().read()
-        conn.close()
-
+        res = getcp(URL_ZCCX, zccx[0], zccx[1])
         reply = '''<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[%s]]></Content><FuncFlag>0</FuncFlag></xml>'''
         response = make_response(reply % (FromUserName, ToUserName, str(int(time.time())), res))
         response.content_type = 'application/xml'
