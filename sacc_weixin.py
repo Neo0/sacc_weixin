@@ -54,6 +54,7 @@ def weixinoauth():
         if hashlib.sha1(s).hexdigest() == sig:
             return make_response(echostr)
     else:
+
         recv = request.stream.read()
         xml_recv = fromstring(recv)
         ToUserName = xml_recv.find('ToUserName').text
@@ -64,7 +65,7 @@ def weixinoauth():
         reply = '''<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[%s]]></Content><FuncFlag>0</FuncFlag></xml>'''
         response = make_response(reply % (FromUserName, ToUserName, str(int(time.time())), res))
         response.content_type = 'application/xml'
-        response.setCharacterEncoding("UTF-8")
+        # response.setCharacterEncoding("UTF-8")
         return response
 
 
