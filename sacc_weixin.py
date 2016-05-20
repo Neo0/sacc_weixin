@@ -54,7 +54,6 @@ def weixinoauth():
         if hashlib.sha1(s).hexdigest() == sig:
             return make_response(echostr)
     else:
-        request.setCharacterEncoding("UTF-8")
         recv = request.stream.read()
         xml_recv = fromstring(recv)
         ToUserName = xml_recv.find('ToUserName').text
